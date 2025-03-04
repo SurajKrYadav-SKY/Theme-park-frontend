@@ -1,0 +1,113 @@
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f8f8;
+
+  .auth-box {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 1200px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 80vw;
+    padding: 40px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .auth-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+
+      h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      p {
+        font-size: 1.2rem;
+        text-align: center;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+
+        .tab-trigger {
+          background: transparent;
+          border: none;
+          font-size: 1.2rem;
+          padding: 10px;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &.active {
+            border-bottom: 2px solid purple;
+            font-weight: bold;
+          }
+
+          &:hover {
+            color: purple;
+          }
+        }
+      }
+
+      .form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+
+        .input {
+          padding: 12px;
+          border-radius: 25px;
+          border: 2px solid #ddd;
+          font-size: 1rem;
+          outline: none;
+
+          &:focus {
+            border-color: purple;
+          }
+        }
+
+        .btn {
+          padding: 12px;
+          background-color: purple;
+          color: white;
+          border: none;
+          border-radius: 25px;
+          font-size: 1.1rem;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:hover {
+            background-color: darkpurple;
+          }
+        }
+      }
+    }
+
+    .auth-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        max-height: 400px;
+        object-fit: cover;
+      }
+
+      @media (max-width: 768px) {
+        display: none; // Hide the image on small screens
+      }
+    }
+  }
+}
