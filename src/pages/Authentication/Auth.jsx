@@ -5,9 +5,11 @@ import { apiClient } from "../../lib/api-client";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import "./Auth.scss";
+import { useAppStore } from "../../store";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { setUserInfo } = useAppStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -51,8 +53,8 @@ const Auth = () => {
           { withCredentials: true }
         );
         if (response.status === 200 && response.data.id) {
-          // setUserInfo(response.data);
-          navigate(response.data.profileSetup ? "/chat" : "/profile");
+          setUserInfo(response.data);
+          navigate(response.data.profileSetup ? "/home" : "/profile");
         }
       } catch (error) {
         console.error(error);
@@ -68,8 +70,8 @@ const Auth = () => {
           { email, password },
           { withCredentials: true }
         );
-        if (response.data.id) {
-          // setUserInfo(response.data);
+        if (response.status === 201 && response.data.id) {
+          setUserInfo(response.data);
           navigate(response.data.profileSetup ? "/chat" : "/profile");
         }
       } catch (error) {
