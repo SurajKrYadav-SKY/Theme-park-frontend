@@ -49,7 +49,9 @@ function App() {
     } else {
       setLoading(false);
     }
-  }, [userInfo, setUserInfo]);
+
+    getUserData();
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
