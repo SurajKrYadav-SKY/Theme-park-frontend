@@ -88,6 +88,27 @@
   display: none;
 }
 
+.generate-button-wrapper {
+  display: flex;
+  margin-top: 15px;
+}
+
+.generate-button {
+  background-color: #00b894;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  max-width: 200px;
+}
+
+.generate-button:hover {
+  background-color: #019f7d;
+}
+
 .profile-info {
   display: flex;
   flex-direction: column;

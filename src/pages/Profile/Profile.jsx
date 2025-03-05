@@ -148,44 +148,54 @@ const Profile = () => {
           <IoArrowBack className="back-arrow-icon" />
         </div>
         <div className="profile-content">
-          <div
-            className="avatar-wrapper"
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-          >
-            <div className={`avatar ${image ? "" : "default-avatar"}`}>
-              {image ? (
-                <img
-                  src={image}
-                  alt="Profile"
-                  className="avatar-image"
-                  onError={() => console.log("Image failed to load:", image)} // for debugging
-                />
-              ) : (
-                <div className={`avatar-placeholder color-${selectedColor}`}>
-                  {firstName ? firstName[0] : userInfo.email[0]}
-                </div>
-              )}
-            </div>
-            {hovered && (
-              <div
-                className="avatar-overlay"
-                onClick={image ? handleDeleteImage : handleFileInputClick}
-              >
+          <div className="profile-pic">
+            <div
+              className="avatar-wrapper"
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+            >
+              <div className={`avatar ${image ? "" : "default-avatar"}`}>
                 {image ? (
-                  <FaTrash className="icon" />
+                  <img
+                    src={image}
+                    alt="Profile"
+                    className="avatar-image"
+                    onError={() => console.log("Image failed to load:", image)} // for debugging
+                  />
                 ) : (
-                  <FaPlus className="icon" />
+                  <div className={`avatar-placeholder color-${selectedColor}`}>
+                    {firstName ? firstName[0] : userInfo.email[0]}
+                  </div>
                 )}
               </div>
-            )}
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="file-input"
-              onChange={handleImageChange}
-              accept=".png, .jpg, .jpeg, .webp, .svg"
-            />
+              {hovered && (
+                <div
+                  className="avatar-overlay"
+                  onClick={image ? handleDeleteImage : handleFileInputClick}
+                >
+                  {image ? (
+                    <FaTrash className="icon" />
+                  ) : (
+                    <FaPlus className="icon" />
+                  )}
+                </div>
+              )}
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="file-input"
+                onChange={handleImageChange}
+                accept=".png, .jpg, .jpeg, .webp, .svg"
+              />
+            </div>
+            <div className="generate-button-wrapper">
+              <button
+                className="generate-button"
+                onClick={() => console.log("Generate button clicked")}
+              >
+                Generate
+              </button>
+            </div>
           </div>
           <div className="profile-info">
             <input
