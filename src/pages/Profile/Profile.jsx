@@ -32,7 +32,6 @@ const Profile = () => {
   }, [userInfo]);
 
   useEffect(() => {
-    // Ensure image is always a string, defaulting to "" if no image exists
     if (userInfo?.image) {
       const newImage = `${HOST}/${userInfo.image}`;
       console.log("Setting image to:", newImage);
@@ -108,11 +107,15 @@ const Profile = () => {
       console.log("Upload response:", response.data.image);
       if (response.status === 200 && response.data.image) {
         // setUserInfo((prev) => ({ ...prev, image: response.data.image }));
-        setUserInfo((prev) => {
-          const updatedUserInfo = { ...prev, image: response.data.image };
-          console.log("Updated userInfo:", updatedUserInfo); // Add this line
-          return updatedUserInfo;
-        });
+        const newImagePath = response.data.image;
+        const fullImageUrl = `${HOST}/${newImagePath}`;
+        setUserInfo((prev) => ({
+          ...prev,
+          image: newImagePath, // Store the relative path
+        }));
+
+        // Update local image state immediately
+        setImage(fullImageUrl);
         toast.success("Profile image updated successfully");
         console.log("image path:", image);
         console.log("image path in userInfo:", userInfo.image);
@@ -130,7 +133,7 @@ const Profile = () => {
 
       if (response.status === 200) {
         setUserInfo((prev) => ({ ...prev, image: null }));
-        setImage(""); // Explicitly set to empty string
+        setImage("");
         toast.success("Profile image removed successfully.");
       }
     } catch (error) {
@@ -152,7 +155,12 @@ const Profile = () => {
           >
             <div className={`avatar ${image ? "" : "default-avatar"}`}>
               {image ? (
-                <img src={image} alt="Profile" className="avatar-image" />
+                <img
+                  src={image}
+                  alt="Profile"
+                  className="avatar-image"
+                  onError={() => console.log("Image failed to load:", image)} // for debugging
+                />
               ) : (
                 <div className={`avatar-placeholder color-${selectedColor}`}>
                   {firstName ? firstName[0] : userInfo.email[0]}
