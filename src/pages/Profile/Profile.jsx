@@ -9,7 +9,8 @@ import {
   ADD_PROFILE_IMAGE_ROUTE,
   HOST,
   REMOVE_PROFILE_IMAGE_ROUTE,
-  GENERATE_PROFILE_IMAGE_ROUTE,
+  HUGGING_FACE_GENERATE_PROFILE_IMAGE_ROUTE,
+  OPEN_AI_GENERATE_PROFILE_IMAGE_ROUTE,
 } from "../../utils/constants";
 import "./Profile.scss";
 import { useAppStore } from "../../store";
@@ -26,8 +27,10 @@ const Profile = () => {
   const fileInputRef = useRef(null);
 
   const [description, setDescription] = useState("");
+  const [prompt, setPrompt] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (userInfo?.profileSetup) {
@@ -156,15 +159,43 @@ const Profile = () => {
     try {
       console.log(description);
       const response = await apiClient.post(
-        GENERATE_PROFILE_IMAGE_ROUTE,
+        OPEN_AI_GENERATE_PROFILE_IMAGE_ROUTE,
         { description },
         { withCredentials: true }
-      ); //axios.post('http://localhost:3000/api/generate-profile-pic'
+      );
       setImageUrl(response.data.data);
     } catch (error) {
       console.error("Error generating image:", error);
     }
     setLoading(false);
+  };
+
+  const handleGenerate = async () => {
+    setLoading(true);
+    setError(null);
+    setImageUrl(null);
+
+    try {
+      const response = await apiClient.post(
+        HUGGING_FACE_GENERATE_PROFILE_IMAGE_ROUTE,
+        { prompt },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+          responseType: "arraybuffer",
+        }
+      );
+
+      const blob = new Blob([response.data], { type: "image/png" });
+      const url = URL.createObjectURL(blob);
+      setImageUrl(url);
+    } catch (err) {
+      setError(err.response ? err.response.data.toString() : err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -214,14 +245,18 @@ const Profile = () => {
                 accept=".png, .jpg, .jpeg, .webp, .svg"
               />
             </div>
-            <div className="generate-button-wrapper">
-              <button
-                className="generate-button"
-                onClick={handleGenerateProfile}
-              >
-                {gen ? "Cancel" : "Generate"}
-              </button>
-            </div>
+            {image ? (
+              ""
+            ) : (
+              <div className="generate-button-wrapper">
+                <button
+                  className="generate-button"
+                  onClick={handleGenerateProfile}
+                >
+                  {gen ? "Cancel" : "Generate"}
+                </button>
+              </div>
+            )}
           </div>
           <div className="profile-info">
             <input
@@ -265,23 +300,32 @@ const Profile = () => {
           <input
             type="text"
             className="input-field"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={prompt}
+            // onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter your description for the profile pic..."
           />
-          <button className="send-button" onClick={generateProfileImage}>
-            {loading ? "Generating..." : "Generate Pic"}
+          <button
+            className="send-button"
+            // onClick={generateProfileImage}
+            onClick={handleGenerate}
+            disabled={loading}
+          >
+            {loading ? "Generating..." : "Generate"}
           </button>
         </div>
       ) : (
         ""
       )}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {imageUrl && (
-        <div>
-          <img src={imageUrl} alt="Generated Profile" width="200" />
-          <button onClick={() => setProfilePic(imageUrl)}>
-            Set as Profile Picture
-          </button>
+        <div className="generated-image">
+          <img
+            src={imageUrl}
+            alt="Generated Profile"
+            style={{ maxWidth: "300px" }}
+          />
+          <button className="set-profile-button">Set as Profile Picture</button>
         </div>
       )}
     </div>

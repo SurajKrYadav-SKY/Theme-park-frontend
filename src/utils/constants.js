@@ -7,4 +7,5 @@ export const GET_USER_INFO = `${AUTH_ROUTE}/user-info`;
 export const UPDATE_PROFILE_ROUTE = `${AUTH_ROUTE}/update-profile`;
 export const ADD_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTE}/add-profile-image`;
 export const REMOVE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTE}/remove-profile-image`;
-export const GENERATE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTE}/gen-profile-pic`;
+export const OPEN_AI_GENERATE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTE}/open-ai-gen-pic`;
+export const HUGGING_FACE_GENERATE_PROFILE_IMAGE_ROUTE = `${AUTH_ROUTE}/hugging-face-gen-pic`;

@@ -1,6 +1,5 @@
 .profile-container {
   background-color: #1b1c24;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -223,6 +222,34 @@
 
     &:active {
       background-color: #2c6699;
+    }
+  }
+}
+
+.generated-image {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 20px;
+
+  img {
+    max-width: 300px;
+    height: auto;
+  }
+
+  .set-profile-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #0056b3;
     }
   }
 }
