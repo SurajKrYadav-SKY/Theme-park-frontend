@@ -9,6 +9,7 @@ import {
   ADD_PROFILE_IMAGE_ROUTE,
   HOST,
   REMOVE_PROFILE_IMAGE_ROUTE,
+  GENERATE_PROFILE_IMAGE_ROUTE,
 } from "../../utils/constants";
 import "./Profile.scss";
 import { useAppStore } from "../../store";
@@ -21,7 +22,12 @@ const Profile = () => {
   const [image, setImage] = useState(""); // Always a string
   const [hovered, setHovered] = useState(false);
   const [selectedColor, setSelectedColor] = useState(0);
+  const [gen, setGen] = useState(false);
   const fileInputRef = useRef(null);
+
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (userInfo?.profileSetup) {
@@ -141,6 +147,26 @@ const Profile = () => {
     }
   };
 
+  const handleGenerateProfile = () => {
+    setGen(!gen);
+  };
+
+  const generateProfileImage = async () => {
+    setLoading(true);
+    try {
+      console.log(description);
+      const response = await apiClient.post(
+        GENERATE_PROFILE_IMAGE_ROUTE,
+        { description },
+        { withCredentials: true }
+      ); //axios.post('http://localhost:3000/api/generate-profile-pic'
+      setImageUrl(response.data.data);
+    } catch (error) {
+      console.error("Error generating image:", error);
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-wrapper">
@@ -191,9 +217,9 @@ const Profile = () => {
             <div className="generate-button-wrapper">
               <button
                 className="generate-button"
-                onClick={() => console.log("Generate button clicked")}
+                onClick={handleGenerateProfile}
               >
-                Generate
+                {gen ? "Cancel" : "Generate"}
               </button>
             </div>
           </div>
@@ -234,6 +260,30 @@ const Profile = () => {
           Save Changes
         </button>
       </div>
+      {gen ? (
+        <div className="input-container">
+          <input
+            type="text"
+            className="input-field"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter your description for the profile pic..."
+          />
+          <button className="send-button" onClick={generateProfileImage}>
+            {loading ? "Generating..." : "Generate Pic"}
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
+      {imageUrl && (
+        <div>
+          <img src={imageUrl} alt="Generated Profile" width="200" />
+          <button onClick={() => setProfilePic(imageUrl)}>
+            Set as Profile Picture
+          </button>
+        </div>
+      )}
     </div>
   );
 };
