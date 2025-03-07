@@ -198,6 +198,53 @@ const Profile = () => {
     }
   };
 
+  const setProfilePicture = async () => {
+    if (!imageUrl) {
+      toast.error("No generated image to set as profile picture");
+      return;
+    }
+
+    try {
+      // Fetching the Blob from the imageUrl
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      // Converting Blob to File object
+      const file = new File([blob], "generated-profile.png", {
+        type: "image/png",
+      });
+
+      // Preparing FormData for upload
+      const formData = new FormData();
+      formData.append("profile-image", file);
+
+      const uploadResponse = await apiClient.post(
+        ADD_PROFILE_IMAGE_ROUTE,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      if (uploadResponse.status === 200 && uploadResponse.data.image) {
+        const newImagePath = uploadResponse.data.image;
+        const fullImageUrl = `${HOST}/${newImagePath}`;
+        setUserInfo((prev) => ({
+          ...prev,
+          image: newImagePath,
+        }));
+        setImage(fullImageUrl);
+        toast.success("Generated image set as profile picture");
+        setGen(false);
+        setImageUrl(null);
+      }
+    } catch (error) {
+      console.error("Error setting generated image:", error);
+      toast.error("Failed to set generated image as profile picture");
+    }
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-wrapper">
@@ -323,9 +370,11 @@ const Profile = () => {
           <img
             src={imageUrl}
             alt="Generated Profile"
-            style={{ maxWidth: "300px" }}
+            style={{ maxWidth: "300px", height: "auto" }}
           />
-          <button className="set-profile-button">Set as Profile Picture</button>
+          <button className="set-profile-button" onClick={setProfilePicture}>
+            Set as Profile Picture
+          </button>
         </div>
       )}
     </div>
